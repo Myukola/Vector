@@ -13,6 +13,7 @@ export default function MutualAidApp() {
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [search, setSearch] = useState("");
+  const [copiedId, setCopiedId] = useState(null);
 
   const calculateDistribution = () => {
     const amount = parseFloat(contribution);
@@ -48,6 +49,13 @@ export default function MutualAidApp() {
 
   const deleteTelegramUser = (id) => {
     setTelegramData(telegramData.filter((t) => t.id !== id));
+  };
+
+  const copyToClipboard = (text, id) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 1500);
+    });
   };
 
   const filteredTelegramData = telegramData.filter(
@@ -166,7 +174,22 @@ export default function MutualAidApp() {
                 {filteredTelegramData.map((t) => (
                   <li key={t.id} className="flex justify-between items-center">
                     <span>{t.username} — {t.phone}</span>
-                    <Button size="sm" variant="destructive" onClick={() => deleteTelegramUser(t.id)}>Видалити</Button>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => copyToClipboard(`${t.username} ${t.phone}`, t.id)}
+                      >
+                        {copiedId === t.id ? "Скопійовано" : "Скопіювати"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => deleteTelegramUser(t.id)}
+                      >
+                        Видалити
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
