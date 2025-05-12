@@ -1,10 +1,7 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import React, { useState } from "react";
+import "./App.css"; // Підключення стилів (створи файл App.css за потреби)
 
-export default function MutualAidApp() {
+function App() {
   const [contribution, setContribution] = useState(1000);
   const [result, setResult] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -22,10 +19,10 @@ export default function MutualAidApp() {
     const distribution = {
       payout: (amount * 0.5).toFixed(2),
       bonusLevel1: (amount * 0.15).toFixed(2),
-      bonusLevel2: (amount * 0.10).toFixed(2),
+      bonusLevel2: (amount * 0.1).toFixed(2),
       bonusLevel3: (amount * 0.05).toFixed(2),
-      reserve: (amount * 0.10).toFixed(2),
-      admin: (amount * 0.10).toFixed(2)
+      reserve: (amount * 0.1).toFixed(2),
+      admin: (amount * 0.1).toFixed(2),
     };
 
     setResult(distribution);
@@ -63,140 +60,90 @@ export default function MutualAidApp() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Система Каси Взаємодопомоги</h1>
-      <Tabs defaultValue="calculator">
-        <TabsList className="grid grid-cols-4 mb-4">
-          <TabsTrigger value="calculator">Калькулятор</TabsTrigger>
-          <TabsTrigger value="participants">Учасники</TabsTrigger>
-          <TabsTrigger value="referrals">Реферали</TabsTrigger>
-          <TabsTrigger value="telegram">Telegram Збір</TabsTrigger>
-        </TabsList>
+    <div className="container">
+      <h1>Система Каси Взаємодопомоги</h1>
 
-        <TabsContent value="calculator">
-          <Card className="mb-4">
-            <CardContent className="p-4">
-              <label className="block mb-2 font-medium">Сума внеску (грн)</label>
-              <Input
-                type="number"
-                value={contribution}
-                onChange={(e) => setContribution(e.target.value)}
-                className="mb-4"
-              />
-              <div className="flex gap-2">
-                <Button onClick={calculateDistribution}>Розрахувати</Button>
-                <Button variant="secondary" onClick={addParticipant}>Додати учасника</Button>
-              </div>
-            </CardContent>
-          </Card>
+      <section>
+        <h2>Калькулятор</h2>
+        <input
+          type="number"
+          value={contribution}
+          onChange={(e) => setContribution(e.target.value)}
+        />
+        <button onClick={calculateDistribution}>Розрахувати</button>
+        <button onClick={addParticipant}>Додати учасника</button>
 
-          {result && (
-            <Card>
-              <CardContent className="p-4">
-                <h2 className="text-xl font-semibold mb-2">Розподіл коштів</h2>
-                <ul className="space-y-1">
-                  <li>Виплати учасникам: {result.payout} грн</li>
-                  <li>Бонус (1 рівень): {result.bonusLevel1} грн</li>
-                  <li>Бонус (2 рівень): {result.bonusLevel2} грн</li>
-                  <li>Бонус (3 рівень): {result.bonusLevel3} грн</li>
-                  <li>Резервний фонд: {result.reserve} грн</li>
-                  <li>Адміністрування: {result.admin} грн</li>
-                </ul>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
+        {result && (
+          <ul>
+            <li>Виплати: {result.payout} грн</li>
+            <li>1 рівень: {result.bonusLevel1} грн</li>
+            <li>2 рівень: {result.bonusLevel2} грн</li>
+            <li>3 рівень: {result.bonusLevel3} грн</li>
+            <li>Резерв: {result.reserve} грн</li>
+            <li>Адміністрація: {result.admin} грн</li>
+          </ul>
+        )}
+      </section>
 
-        <TabsContent value="participants">
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-xl font-semibold mb-2">Список учасників</h2>
-              <ul className="space-y-1">
-                {participants.map((p) => (
-                  <li key={p.id}>Учасник #{p.id} — Внесок: {p.amount} грн</li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      <section>
+        <h2>Учасники</h2>
+        <ul>
+          {participants.map((p) => (
+            <li key={p.id}>#{p.id} — {p.amount} грн</li>
+          ))}
+        </ul>
+      </section>
 
-        <TabsContent value="referrals">
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-xl font-semibold mb-2">Реферальна структура</h2>
-              <div className="flex gap-2 mb-2">
-                <Button onClick={() => addReferral(1)}>Додати 1 рівень</Button>
-                <Button onClick={() => addReferral(2)}>Додати 2 рівень</Button>
-                <Button onClick={() => addReferral(3)}>Додати 3 рівень</Button>
-              </div>
-              <ul className="space-y-1">
-                {referrals.map((r) => (
-                  <li key={r.id}>Запрошений #{r.id} — Рівень: {r.level}</li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      <section>
+        <h2>Реферали</h2>
+        <button onClick={() => addReferral(1)}>Додати 1 рівень</button>
+        <button onClick={() => addReferral(2)}>Додати 2 рівень</button>
+        <button onClick={() => addReferral(3)}>Додати 3 рівень</button>
+        <ul>
+          {referrals.map((r) => (
+            <li key={r.id}>Запрошений #{r.id} — рівень {r.level}</li>
+          ))}
+        </ul>
+      </section>
 
-        <TabsContent value="telegram">
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="text-xl font-semibold mb-2">Збір контактів через Telegram</h2>
-              <label className="block mb-2">Telegram Username</label>
-              <Input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="@username"
-                className="mb-2"
-              />
-              <label className="block mb-2">Номер телефону</label>
-              <Input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="380XXXXXXXXX"
-                className="mb-2"
-              />
-              <Button onClick={registerTelegramUser}>Зберегти</Button>
+      <section>
+        <h2>Контакти Telegram</h2>
+        <input
+          type="text"
+          placeholder="@username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="380XXXXXXXXX"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <button onClick={registerTelegramUser}>Додати</button>
 
-              <label className="block mt-4 mb-2">Пошук</label>
-              <Input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Введіть username або телефон"
-                className="mb-4"
-              />
+        <input
+          type="text"
+          placeholder="Пошук"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-              <h3 className="text-lg font-medium mt-4 mb-2">Зібрані контакти</h3>
-              <ul className="space-y-1">
-                {filteredTelegramData.map((t) => (
-                  <li key={t.id} className="flex justify-between items-center">
-                    <span>{t.username} — {t.phone}</span>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => copyToClipboard(`${t.username} ${t.phone}`, t.id)}
-                      >
-                        {copiedId === t.id ? "Скопійовано" : "Скопіювати"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => deleteTelegramUser(t.id)}
-                      >
-                        Видалити
-                      </Button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        <ul>
+          {filteredTelegramData.map((t) => (
+            <li key={t.id}>
+              {t.username} — {t.phone} 
+              <button onClick={() => copyToClipboard(`${t.username} ${t.phone}`, t.id)}>
+                {copiedId === t.id ? "Скопійовано" : "Копіювати"}
+              </button>
+              <button onClick={() => deleteTelegramUser(t.id)}>Видалити</button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
+
+export default App;
+
